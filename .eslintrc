@@ -1,6 +1,6 @@
 {
   "root": true,
-  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "extends": "airbnb",
   "plugins": ["jest"],
   "env": {
     "jest/globals": true

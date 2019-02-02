@@ -1,84 +1,47 @@
-'use strict';
+var conductor = require('./conductor');
+var { ExitCommand, CreateCommand } = require('./commands');
 
-const program = require('commander');
-const chalk = require('chalk');
-const clear = require('clear');
-const figlet = require('figlet');
-const { prompt } = require('inquirer');
+var { createInterface } = require('readline');
+var rl = createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-const CommandFactory = require('./command.factory');
-const CommandBuilder = require('./command.build');
+console.log('create <fileName> <text> | history | undo | redo | exit');
+rl.prompt();
 
-/**
- * @class InitCLIBuilder
- * @extends {CommandBuilder}
- * @description create a builder to intializer cli
- * @author Cássio Paixão
- */
-class InitCLIBuilder extends CommandBuilder {
-  constructor() {
-    super();
-    this.init = this.initCLI();
-    this.create = this.createCLI();
-    this.end = this.endCLI();
-    super.init();
+rl.on('line', input => {
+
+  var [commandText, ...remaining] = input.split(' ');
+  var [fileName, ...fileText] = remaining;
+  var text = fileText.join(' ');
+
+  switch (commandText) {
+
+    case 'history':
+      conductor.printHistory();
+      break;
+
+    case 'undo':
+      conductor.undo();
+      break;
+
+    case 'redo':
+      conductor.redo();
+      break;
+
+    case 'exit':
+      conductor.run(new ExitCommand());
+      break;
+
+    case 'create' :
+      conductor.run(new CreateCommand(fileName, text));
+      break;
+
+    default :
+      console.log(`${commandText} command not found!`);
   }
 
-  /**
-   * @method initCLI
-   * @description Intializer CLI
-   */
-  initCLI() {
-    clear();
-    console.log(
-      chalk.green(
-        figlet.textSync('Challeng Train', {
-          horizontalLayout: 'full',
-        }),
-      ),
-    );
+  rl.prompt();
 
-    program.description('start test trains with js');
-  }
-
-  /**
-   * @method createCLI
-   * @description create options questions to CLI
-   */
-  createCLI() {
-    this.options = [
-      {
-        type: 'input',
-        name: 'name',
-        message: 'Enter data for test: ',
-      },
-    ];
-
-    program
-      .command('start')
-      .alias('s')
-      .description('Start Test')
-      .action(() => {
-        prompt(this.options).then(option => {
-          CommandFactory.init(option.name.toString());
-        });
-      });
-  }
-
-  /**
-   * @method endCLI
-   * @description finalize CLI
-   */
-  endCLI() {
-    if (
-      !process.argv.slice(2).length ||
-      !/[arudl]/.test(process.argv.slice(2))
-    ) {
-      program.outputHelp();
-      process.exit();
-    }
-    program.parse(process.argv);
-  }
-}
-
-module.exports = new InitCLIBuilder();
+});
