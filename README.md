@@ -1,4 +1,4 @@
-challeng-trains-js
+challenge-trains-js
 ===========
 
 Solution to the trains problem in JS:
