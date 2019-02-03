@@ -13,15 +13,12 @@ var rl = createInterface({
 });
 
 clear();
-console.log(chalk.green(
-
-));
 
 console.log(chalk.hex('#ec6aa0').bold(figlet.textSync(`Challenge TW =)`, {
   horizontalLayout: 'full',
 })));
 
-console.log(`test <value> | exit`);
+console.log(chalk.green(`test <value> | exit`));
 rl.prompt();
 
 rl.on('line', input => {
