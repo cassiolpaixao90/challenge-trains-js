@@ -1,4 +1,4 @@
-trains-js
+challeng-trains-js
 ===========
 
 Solution to the trains problem in JS:
